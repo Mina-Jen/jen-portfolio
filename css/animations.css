@@ -1,0 +1,15 @@
+/* Hero sequence: line art draws itself, then the rest settles in */
+.js .hero__art path{stroke-dasharray:1;stroke-dashoffset:1;animation:draw 1.6s cubic-bezier(.6,0,.2,1) forwards;animation-delay:calc(var(--i,0)*.12s)}
+.js .hero__art .fill{transform-origin:center;transform-box:fill-box;transform:scale(0);animation:pop .7s cubic-bezier(.3,1.4,.5,1) .2s forwards}
+.js .hero__hand,.js .hero__copy{opacity:0;animation:in .8s ease 1.4s forwards}
+.js .hero__copy{animation-delay:1.7s}
+@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes pop{to{transform:scale(1)}}
+@keyframes in{to{opacity:1}}
+/* Scroll hook: add data-animate to any element; JS adds .is-visible */
+.js [data-animate]{opacity:0;transition:opacity .7s ease}
+.js [data-animate].is-visible{opacity:1}
+@media (prefers-reduced-motion:reduce){
+  .js .hero__art path,.js .hero__art .fill,.js .hero__hand,.js .hero__copy,.js [data-animate]{animation:none;transition:none;opacity:1;stroke-dashoffset:0;transform:none}
+  html{scroll-behavior:auto}
+}

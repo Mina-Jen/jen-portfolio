@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jen Otehlie Mina – Junior Programmer</title>
+<meta name="description" content="Portfolio of Jen Otehlie Mina, junior programmer working in web development, AI features and QA.">
+<link rel="icon" href="assets/icons/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600&family=Playfair+Display:wght@400;500&family=Reenie+Beanie&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css">
+<link rel="stylesheet" href="css/base.css">
+<link rel="stylesheet" href="css/layout.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/animations.css">
+</head>
+<body>
+<header class="nav">
+  <a class="nav__name" href="#top">Jen Otehlie Mina</a>
+  <nav class="nav__links" aria-label="Main">
+    <a href="#about">About</a><a href="#skills">Skills</a><a href="#experience">Experience</a><a href="#projects">Projects</a><a href="#contact">Contact</a>
+  </nav>
+</header>
+<main id="top">
+  <section class="hero">
+    <svg class="hero__art" viewBox="0 0 620 320" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle class="fill" cx="325" cy="170" r="105" fill="var(--yellow)" stroke="none"/>
+      <path d="M60 230h70l-8 60H68z"/><path d="M95 230C95 180 90 150 100 110"/>
+      <path d="M100 150C60 140 50 110 70 95c25 5 35 30 30 55z"/><path d="M100 125c40-10 60-35 45-55-25 0-45 25-45 55z"/>
+      <path d="M230 120h190v120H230z"/><path d="M205 245h240l-15 20H220z"/>
+      <path d="M290 160l-25 20 25 20"/><path d="M360 160l25 20-25 20"/><path d="M335 155l-10 50"/>
+      <path d="M500 205h75"/><path d="M510 205l-10 85"/><path d="M565 205l10 85"/>
+      <path d="M520 165h35v40h-35z"/><path d="M555 175c15 0 15 22 0 22"/><path d="M530 150c-6-8 6-14 0-22"/><path d="M545 150c-6-8 6-14 0-22"/>
+    </svg>
+    <p class="hero__hand">Junior programmer, building things that work</p>
+    <div class="hero__copy">
+      <p>I build responsive websites and AI-powered features, and I test them until they hold up. I also design, so what I build looks as good as it runs.</p>
+      <a class="btn" href="#projects">See my projects</a>
+    </div>
+  </section>
+  <section id="about" class="section"><h2>About</h2><div class="prose" id="about-text"></div></section>
+  <section id="skills" class="section"><h2>Skills</h2><div class="grid grid--skills" id="skills-grid"></div></section>
+  <section id="experience" class="section"><h2>Experience</h2><ol class="timeline" id="experience-list"></ol></section>
+  <section id="projects" class="section"><h2>Projects</h2><div class="grid grid--projects" id="projects-grid"></div></section>
+  <section id="credentials" class="section split">
+    <div><h2>Certifications</h2><ul class="plain" id="certs-list"></ul></div>
+    <div><h2>Education</h2><ul class="plain" id="edu-list"></ul></div>
+  </section>
+  <section id="contact" class="section contact">
+    <h2>Let’s work together</h2>
+    <p>I’m open to junior developer, AI QA and front-end roles.</p>
+    <div class="contact__links" id="contact-links"></div>
+  </section>
+</main>
+<footer class="footer">© 2026 Jen Otehlie Mina</footer>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

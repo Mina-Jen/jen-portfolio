@@ -1,0 +1,10 @@
+:root{
+  --cream:#F5EBDC; --paper:#FFFBF3; --ink:#000; --muted:#5b5348;
+  --yellow:#F4C542; --orange:#E8743B;
+  --font-hand:'Reenie Beanie',cursive;
+  --font-display:'Bricolage Grotesque',system-ui,sans-serif;
+  --font-body:'Playfair Display',Georgia,serif;
+  --space-1:.5rem; --space-2:1rem; --space-3:2rem; --space-4:4rem; --space-5:7rem;
+  --radius-card:28px; --radius-pill:999px; --maxw:1100px;
+  --shadow:0 12px 30px rgba(60,40,10,.12);
+}
