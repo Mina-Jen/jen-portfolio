@@ -1,11 +1,4 @@
 export const experience = [
-  { role: "Full-Stack AI Engineer Intern", org: "SecretChapters (web app)", dates: "Aug 2026 – Oct 2026", points: [
-    "Built a hybrid search RAG pipeline (keyword plus vector, with reranking) and benchmarked it against the previous system.",
-    "Designed context-aware prompt structures for the chapter generation and chat agents.",
-    "Expanded the LLM evaluation suite with LLM-as-judge rubrics and regression cases.",
-    "Profiled LLM call latency and wrote a performance report with recommendations.",
-    "Led end-to-end QA across generation, chat, retrieval, auth and payments."
-  ]},
   { role: "IT Intern", org: "iBuild.PH Web Services", dates: "Feb 2026 – Apr 2026", points: [
     "Built and fixed front-end components in HTML, CSS and JavaScript.",
     "Updated site content in cPanel, Drupal and WordPress, and deployed files via FTP.",
