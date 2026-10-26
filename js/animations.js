@@ -1,4 +1,5 @@
 const reduceMotion = () => matchMedia("(prefers-reduced-motion: reduce)").matches;
+const finePointer = () => matchMedia("(pointer: fine)").matches;
 const clamp = (n, min, max) => Math.min(Math.max(n, min), max);
 
 function splitHeadings() {
@@ -57,6 +58,24 @@ function initHeroName() {
   let raf = 0;
   const pointer = { x: 0, y: 0 };
 
+  const parseRgb = (value, fallback) => {
+    const m = value.trim().match(/^(\d+)\s+(\d+)\s+(\d+)$/);
+    return m ? [Number(m[1]), Number(m[2]), Number(m[3])] : fallback;
+  };
+  let inkRgb = [244, 244, 245];
+  let glowRgb = [165, 180, 252];
+  const readTint = () => {
+    const cs = getComputedStyle(document.documentElement);
+    inkRgb = parseRgb(cs.getPropertyValue("--ink-rgb"), inkRgb);
+    glowRgb = parseRgb(cs.getPropertyValue("--glow-rgb"), glowRgb);
+  };
+  readTint();
+  window.addEventListener("themechange", () => {
+    readTint();
+    items.forEach((item) => { item.el.style.color = ""; });
+    start();
+  });
+
   const measure = () => {
     const scrollX = window.scrollX;
     const scrollY = window.scrollY;
@@ -92,7 +111,10 @@ function initHeroName() {
       item.el.style.transform = y ? `translate3d(0,${y.toFixed(2)}px,0)` : "";
       if (item.mix > 0.01) {
         const mix = item.mix;
-        item.el.style.color = `rgb(${Math.round(17 + 26 * mix)} ${Math.round(20 + 64 * mix)} ${Math.round(19 + 48 * mix)})`;
+        const r = Math.round(inkRgb[0] + (glowRgb[0] - inkRgb[0]) * mix);
+        const g = Math.round(inkRgb[1] + (glowRgb[1] - inkRgb[1]) * mix);
+        const b = Math.round(inkRgb[2] + (glowRgb[2] - inkRgb[2]) * mix);
+        item.el.style.color = `rgb(${r} ${g} ${b})`;
       } else if (item.el.style.color) {
         item.el.style.color = "";
       }
@@ -172,6 +194,14 @@ function initHeroField() {
   let lastFrame = 0;
   let inView = true;
   const state = { px: 0, py: 0, sx: 0, sy: 0, gx: 0, gy: 0, gtx: 0, gty: 0, active: false, strength: 0 };
+  const palette = { strong: "#75757F", soft: "#3A3A41" };
+  const readPalette = () => {
+    const cs = getComputedStyle(document.documentElement);
+    palette.strong = cs.getPropertyValue("--field-a").trim() || palette.strong;
+    palette.soft = cs.getPropertyValue("--field-b").trim() || palette.soft;
+  };
+  readPalette();
+  window.addEventListener("themechange", () => { readPalette(); draw(performance.now()); });
 
   const buildLines = () => {
     const count = width < 560 ? 11 : width < 960 ? 15 : 19;
@@ -225,7 +255,7 @@ function initHeroField() {
         else ctx.lineTo(x, y);
       }
       ctx.globalAlpha = line.alpha * (reduced ? 1 : 0.25 + 0.75 * reveal);
-      ctx.strokeStyle = line.pine ? "#2b5443" : "#111413";
+      ctx.strokeStyle = line.pine ? palette.strong : palette.soft;
       ctx.lineWidth = line.weight;
       ctx.stroke();
     });
@@ -328,6 +358,95 @@ function initHeroField() {
   if ("ResizeObserver" in window) new ResizeObserver(resize).observe(canvas);
   else window.addEventListener("resize", resize);
   resize();
+}
+
+function initSheen() {
+  if (!finePointer()) return;
+  const surfaces = document.querySelectorAll(
+    ".hero__facts, .details, .credential, .featured__card, .project-card, .contact__panel"
+  );
+  let pending = null;
+  let raf = 0;
+  const flush = () => {
+    raf = 0;
+    if (!pending) return;
+    pending.node.style.setProperty("--sheen-x", `${pending.x.toFixed(1)}%`);
+    pending.node.style.setProperty("--sheen-y", `${pending.y.toFixed(1)}%`);
+    pending = null;
+  };
+  surfaces.forEach((node) => {
+    node.addEventListener("pointermove", (event) => {
+      const rect = node.getBoundingClientRect();
+      if (!rect.width || !rect.height) return;
+      pending = {
+        node,
+        x: ((event.clientX - rect.left) / rect.width) * 100,
+        y: ((event.clientY - rect.top) / rect.height) * 100
+      };
+      if (!raf) raf = requestAnimationFrame(flush);
+    }, { passive: true });
+  });
+}
+
+function initMagnetic() {
+  if (!finePointer() || reduceMotion()) return;
+  document.querySelectorAll(".btn").forEach((btn) => {
+    let raf = 0;
+    let tx = 0;
+    let ty = 0;
+    const flush = () => {
+      raf = 0;
+      btn.style.setProperty("--mag-x", `${tx.toFixed(1)}px`);
+      btn.style.setProperty("--mag-y", `${ty.toFixed(1)}px`);
+    };
+    const set = (x, y) => {
+      tx = x;
+      ty = y;
+      if (!raf) raf = requestAnimationFrame(flush);
+    };
+    btn.addEventListener("pointermove", (event) => {
+      const r = btn.getBoundingClientRect();
+      set(
+        clamp((event.clientX - (r.left + r.width / 2)) * 0.18, -5, 5),
+        clamp((event.clientY - (r.top + r.height / 2)) * 0.24, -4, 4)
+      );
+    }, { passive: true });
+    btn.addEventListener("pointerleave", () => set(0, 0));
+  });
+}
+
+function initStatCount() {
+  if (reduceMotion()) return;
+  const host = document.getElementById("featured-project");
+  if (!host) return;
+  const counters = [];
+  host.querySelectorAll(".featured__stats strong").forEach((node) => {
+    const match = node.textContent.trim().match(/^(\d+)(.*)$/);
+    if (match) counters.push({ node, to: Number(match[1]), suffix: match[2] });
+  });
+  if (!counters.length) return;
+
+  const run = () => counters.forEach((item, i) => {
+    const duration = 850 + i * 140;
+    const t0 = performance.now();
+    const step = (now) => {
+      const p = clamp((now - t0) / duration, 0, 1);
+      item.node.textContent = Math.round(item.to * (1 - Math.pow(1 - p, 4))) + item.suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  });
+
+  if (!("IntersectionObserver" in window)) {
+    run();
+    return;
+  }
+  const io = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    io.disconnect();
+    setTimeout(run, 240);
+  }, { threshold: 0.35 });
+  io.observe(host);
 }
 
 function initReveals() {
@@ -510,6 +629,9 @@ export function initAnimations() {
   assignStagger();
   initHeroName();
   initHeroField();
+  initSheen();
+  initMagnetic();
+  initStatCount();
   initReveals();
   initScrollUI();
   initNavMenu();

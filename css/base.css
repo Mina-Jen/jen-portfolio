@@ -5,38 +5,40 @@ body{
   font-family:var(--font-body);font-size:1rem;line-height:1.65;
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
   font-feature-settings:"ss01" on,"cv05" on;
+  transition:background-color .5s var(--ease-glass),color .5s var(--ease-glass);
 }
-::selection{background:var(--accent);color:var(--on-dark)}
+::selection{background:var(--accent);color:var(--selection-ink)}
 h1,h2,h3,h4{margin:0;font-weight:500;line-height:1.08;text-wrap:balance}
-h1{font-family:var(--font-display);font-size:clamp(3rem,8.4vw,7.1rem);letter-spacing:-.06em;line-height:.92}
-h2{font-size:clamp(2.1rem,4.2vw,3.5rem);letter-spacing:-.045em;line-height:1.04}
-h3{font-size:1.15rem;font-weight:600;letter-spacing:-.025em;line-height:1.25}
+h1{font-family:var(--font-display);font-size:clamp(3rem,8.4vw,7.1rem);letter-spacing:-.055em;line-height:.94;font-weight:500}
+h2{font-family:var(--font-display);font-size:clamp(2.1rem,4.2vw,3.5rem);letter-spacing:-.04em;line-height:1.04;font-weight:500}
+h3{font-size:1.15rem;font-weight:600;letter-spacing:-.02em;line-height:1.25}
 p{margin:0 0 1rem;overflow-wrap:break-word}
 a{color:inherit}
 button{font:inherit;color:inherit}
-:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:1px}
+:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:2px}
 img,svg{max-width:100%;display:block}
 
 .label{
   display:flex;align-items:center;gap:.65rem;margin:0;
-  font-size:.62rem;font-weight:600;letter-spacing:.16em;line-height:1.4;
+  font-family:var(--font-mono);font-size:.6rem;font-weight:500;letter-spacing:.14em;line-height:1.4;
   text-transform:uppercase;color:var(--muted);font-variant-numeric:tabular-nums;
 }
-.label__no{color:var(--accent);letter-spacing:.08em}
+.label__no{color:var(--accent);letter-spacing:.06em}
 .label--light{color:var(--on-dark-soft)}
-.label--light .label__no{color:var(--on-dark)}
+.label--light .label__no{color:var(--inv-accent)}
 
 .muted{color:var(--muted)}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 
 .skip-link{
   position:fixed;top:.9rem;left:.9rem;z-index:10001;
-  padding:.75rem 1rem;background:var(--ink);color:var(--on-dark);
-  font-size:.68rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
+  padding:.75rem 1.1rem;border-radius:999px;
+  background:var(--btn-primary-bg);color:var(--btn-primary-ink);
+  font-family:var(--font-mono);font-size:.62rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;
   text-decoration:none;transform:translateY(-160%);
   transition:transform .3s var(--ease-out);
 }
-.skip-link:focus-visible{transform:none;outline-color:var(--on-dark);outline-offset:3px}
+.skip-link:focus-visible{transform:none;outline-offset:3px}
 
 .link{
   text-decoration:underline;text-decoration-thickness:1px;
@@ -54,6 +56,6 @@ img,svg{max-width:100%;display:block}
   background:var(--line-strong);transform-origin:left;
   transition:background .3s ease,transform .35s var(--ease-out);
 }
-.link--arrow:hover::after{background:var(--ink)}
+.link--arrow:hover::after{background:var(--accent)}
 .arrow-glyph{font-size:.92em;transition:transform .3s var(--ease-out)}
 .link--arrow:hover .arrow-glyph{transform:translate(2px,-2px)}

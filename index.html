@@ -1,20 +1,31 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Jen Otehlie Mina – Junior Programmer</title>
 <meta name="description" content="Portfolio of Jen Otehlie Mina, junior programmer building responsive web interfaces with a focus on QA.">
-<meta name="theme-color" content="#F3F1EC">
+<meta name="theme-color" content="#09090B" id="meta-theme">
 <link rel="icon" href="assets/icons/favicon.svg">
+<script>
+  (function () {
+    var t;
+    try { t = localStorage.getItem("jm-theme"); } catch (e) {}
+    if (t !== "light" && t !== "dark") {
+      t = matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+    }
+    document.documentElement.setAttribute("data-theme", t);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/tokens.css?v=20261024h">
-<link rel="stylesheet" href="css/base.css?v=20261024h">
-<link rel="stylesheet" href="css/layout.css?v=20261024h">
-<link rel="stylesheet" href="css/components.css?v=20261024h">
-<link rel="stylesheet" href="css/animations.css?v=20261024h">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/tokens.css?v=20261026k">
+<link rel="stylesheet" href="css/base.css?v=20261026k">
+<link rel="stylesheet" href="css/layout.css?v=20261026k">
+<link rel="stylesheet" href="css/components.css?v=20261026k">
+<link rel="stylesheet" href="css/glass.css?v=20261026k">
+<link rel="stylesheet" href="css/animations.css?v=20261026k">
 </head>
 <body id="top">
 <a class="skip-link" href="#main">Skip to content</a>
@@ -32,6 +43,10 @@
         <a href="#projects"><span>04</span>Projects</a>
         <a href="#contact"><span>05</span>Contact</a>
       </nav>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Switch to light mode">
+        <svg class="theme-toggle__icon theme-toggle__icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><circle cx="12" cy="12" r="7.9"/><path d="M12 4.1a7.9 7.9 0 0 1 0 15.8Z" fill="currentColor" stroke="none"/></svg>
+        <svg class="theme-toggle__icon theme-toggle__icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
+      </button>
       <button class="nav__toggle" id="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu">
         <span class="nav__toggle-box" aria-hidden="true"><span></span><span></span></span>
         <span class="sr-only">Menu</span>
@@ -176,6 +191,6 @@
 <button class="to-top" id="to-top" type="button" aria-label="Back to top">
   <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 14 V3"/><path d="M3.5 7.5 L8 3 L12.5 7.5"/></svg>
 </button>
-<script type="module" src="js/main.js?v=20261024h"></script>
+<script type="module" src="js/main.js?v=20261026k"></script>
 </body>
 </html>

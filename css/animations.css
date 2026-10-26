@@ -19,9 +19,9 @@
   animation-delay:calc(.18s + var(--c,0)*.028s);
 }
 @keyframes char-rise{
-  0%{transform:translateY(115%) rotate(3deg);filter:blur(5px);opacity:0;color:#2b5443}
-  45%{opacity:1;color:#2b5443}
-  100%{transform:none;filter:blur(0);opacity:1;color:#111413}
+  0%{transform:translateY(115%) rotate(3deg);filter:blur(5px);opacity:0;color:var(--accent)}
+  45%{opacity:1;color:var(--accent)}
+  100%{transform:none;filter:blur(0);opacity:1;color:var(--ink)}
 }
 
 /* ============ hero: drafting field ============ */
@@ -30,18 +30,52 @@
 @keyframes hero-field-in{to{opacity:1}}
 @keyframes hero-wash-in{to{opacity:1}}
 
-/* ============ scroll reveals ============ */
-.js [data-animate]{opacity:0;transform:translateY(14px);transition:opacity .75s var(--ease-out),transform .75s var(--ease-out)}
-.js [data-animate].is-visible{opacity:1;transform:none}
+/* ============ scroll reveals ============
+   Reveals drive the independent `translate` property so a hover lift
+   on the same element can keep using `transform` instead of fighting it. */
+.js [data-animate]{opacity:0;translate:0 14px;transition:opacity .75s var(--ease-out),translate .75s var(--ease-out)}
+.js [data-animate].is-visible{opacity:1;translate:none}
 .js [data-stagger]>*:not([data-static]){
-  opacity:0;transform:translateY(16px);
-  transition:opacity .7s var(--ease-out),transform .7s var(--ease-out);
+  opacity:0;translate:0 16px;
+  transition:opacity .7s var(--ease-out),translate .7s var(--ease-out);
   transition-delay:calc(var(--i,0)*.055s);
 }
-.js [data-stagger].is-visible>*:not([data-static]){opacity:1;transform:none}
+.js [data-stagger].is-visible>*:not([data-static]){opacity:1;translate:none}
 
 /* ============ micro motion ============ */
 @keyframes pulse{0%{transform:scale(.6);opacity:.85}70%{transform:scale(1.7);opacity:0}100%{opacity:0}}
+
+/* ============ glass: card settle ============ */
+.js .project-card,.js .details,.js .credential,.js .featured__card{
+  transition-property:opacity,translate,transform,border-color,box-shadow;
+  transition-duration:.7s,.6s,.55s,.35s,.55s;
+  transition-timing-function:var(--ease-out),var(--ease-spring),var(--ease-spring),ease,var(--ease-glass);
+}
+
+/* ============ glass: specular sweep on first reveal ============ */
+.featured__card::after,.contact__panel::after{
+  content:"";position:absolute;top:-20%;bottom:-20%;left:0;width:38%;z-index:1;
+  pointer-events:none;opacity:0;filter:blur(10px);
+  background:linear-gradient(104deg,transparent 0%,rgba(255,255,255,.55) 48%,transparent 100%);
+}
+.contact__panel::after{background:linear-gradient(104deg,transparent,rgba(255,255,255,.28),transparent)}
+.js #featured-project.is-visible > .featured__card::after,
+.js .contact__panel.is-visible::after{animation:glass-sweep 1.7s var(--ease-glass) .25s both}
+@keyframes glass-sweep{
+  0%{opacity:0;transform:translate3d(-140%,0,0)}
+  14%{opacity:1}
+  100%{opacity:0;transform:translate3d(320%,0,0)}
+}
+
+/* ============ glass: ambient depth layers behind the frost ============ */
+@keyframes bloom-drift{
+  0%{transform:translate3d(-50%,0,0) scale(1)}
+  100%{transform:translate3d(-42%,6%,0) scale(1.14)}
+}
+@keyframes veil-drift{
+  0%{transform:rotate(0deg) scale(1.1)}
+  100%{transform:rotate(360deg) scale(1.1)}
+}
 
 /* ============ reduced motion ============ */
 @media (prefers-reduced-motion:reduce){
@@ -54,8 +88,15 @@
   }
   .js .hero__field,.js .hero__wash{opacity:1!important;animation:none!important}
   .hero__wash{will-change:auto}
-  .js [data-animate]{opacity:1!important;transform:none!important;transition:none!important}
-  .js [data-stagger]>*:not([data-static]){opacity:1!important;transform:none!important;transition:none!important}
+  .js [data-animate]{opacity:1!important;translate:none!important;transition:none!important}
+  .js [data-stagger]>*:not([data-static]){opacity:1!important;translate:none!important;transition:none!important}
   .timeline__fill{transform:scaleY(1)!important}
-  .browser,.project-card,.featured__card,.btn,.to-top{transition:none!important}
+  .contact::before{animation:none!important}
+  body::after{animation:none!important;transform:rotate(18deg)}
+  .js #featured-project.is-visible > .featured__card::after,
+  .js .contact__panel.is-visible::after{animation:none!important;opacity:0!important}
+  .browser,.project-card,.featured__card,.details,.credential,.btn,.to-top,.copy-btn,.nav,
+  .status,.contact__panel{transition:none!important}
+  .hero__facts::before,.details::before,.credential::before,.featured__card::before,
+  .project-card::before,.contact__panel::before{transition:none!important}
 }

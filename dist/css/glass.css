@@ -1,0 +1,164 @@
+/* ============================================================
+   GLASS LAYER — frosted material, themed end to end.
+
+   A pane needs four things at once, and only the first is
+   backdrop-filter:
+     1. material behind it to diffuse      → the fixed grain + glow atmosphere
+     2. a specular rim all the way round   → --pane-rim / --pane-hi
+     3. a permanent light source           → --glass-spec + resting sheen
+     4. weight, i.e. layered shadows       → --pane-shadow
+   Every surface degrades to a flat card when blur or
+   transparency is unavailable.
+   ============================================================ */
+
+/* ---------- 1. atmosphere: grain, a cool crown, weighted edges ---------- */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;
+  background:var(--page-atmosphere);
+}
+body::after{
+  content:"";position:fixed;inset:-45%;z-index:-1;pointer-events:none;
+  background:var(--veil);
+  opacity:var(--veil-opacity);
+  animation:veil-drift 46s linear infinite;
+}
+
+/* ---------- 2. the shared pane recipe ----------
+   Blur is dialled per surface: bigger panes diffuse more. */
+.hero__facts,.details,.credential,.featured__card,.project-card{
+  position:relative;
+  border:1px solid var(--pane-border);
+  border-radius:var(--radius-glass);
+  background:var(--pane-bg);
+  -webkit-backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat));
+  backdrop-filter:blur(var(--glass-blur)) saturate(var(--glass-sat));
+  box-shadow:var(--pane-hi),var(--pane-rim),var(--pane-tint),var(--pane-shadow);
+}
+.hero__facts,.project-card{background:var(--pane-bg-strong)}
+.hero__facts{padding:clamp(1.05rem,2vw,1.45rem) clamp(1.15rem,2.2vw,1.6rem)}
+
+/* ---------- status pill + chips read as inset glass, no second blur ---------- */
+.status{-webkit-backdrop-filter:blur(14px) saturate(var(--glass-sat));backdrop-filter:blur(14px) saturate(var(--glass-sat))}
+
+/* ---------- about details + credentials ---------- */
+.details,.credential{-webkit-backdrop-filter:blur(22px) saturate(var(--glass-sat));backdrop-filter:blur(22px) saturate(var(--glass-sat))}
+
+/* ---------- featured project ---------- */
+.featured__card{-webkit-backdrop-filter:blur(30px) saturate(var(--glass-sat));backdrop-filter:blur(30px) saturate(var(--glass-sat))}
+.browser{
+  border:1px solid var(--pane-border);
+  background:var(--pane-bg-strong);
+  -webkit-backdrop-filter:blur(12px) saturate(var(--glass-sat));
+  backdrop-filter:blur(12px) saturate(var(--glass-sat));
+  transition:transform .7s var(--ease-spring),box-shadow .7s var(--ease-glass);
+}
+.featured__card:hover .browser{
+  transform:translate3d(0,-4px,0) scale(1.008);
+  box-shadow:var(--browser-shadow);
+}
+
+/* ---------- project cards ---------- */
+.project-card{
+  overflow:hidden;
+  -webkit-backdrop-filter:blur(24px) saturate(var(--glass-sat));
+  backdrop-filter:blur(24px) saturate(var(--glass-sat));
+  transition:transform .5s var(--ease-spring),border-color .35s ease,box-shadow .5s var(--ease-glass);
+}
+.project-card:hover{
+  border-color:var(--pane-border-hover);
+  box-shadow:var(--pane-hi),var(--pane-rim),var(--pane-tint),var(--pane-shadow-hover);
+}
+
+/* ---------- ghost + icon buttons ---------- */
+.btn--ghost,.theme-toggle,.nav__toggle,.project-card__arrow,.copy-btn{
+  -webkit-backdrop-filter:blur(14px) saturate(var(--glass-sat));
+  backdrop-filter:blur(14px) saturate(var(--glass-sat));
+}
+.to-top{
+  border:1px solid var(--chip-border);
+  background:var(--chip-field);
+  box-shadow:var(--chip-hi),var(--pane-shadow);
+  -webkit-backdrop-filter:blur(16px) saturate(var(--glass-sat));
+  backdrop-filter:blur(16px) saturate(var(--glass-sat));
+}
+
+/* ---------- contact: inverted glass pane over a drifting bloom ---------- */
+.contact{position:relative;isolation:isolate;overflow:hidden}
+.contact > *{position:relative;z-index:1}
+.contact::before{
+  content:"";position:absolute;z-index:0;left:50%;top:-12%;
+  width:min(84rem,150vw);aspect-ratio:1;border-radius:50%;pointer-events:none;
+  background:var(--bloom);
+  transform:translate3d(-50%,0,0);
+  animation:bloom-drift 26s var(--ease-glass) infinite alternate;
+}
+.contact__panel{
+  position:relative;overflow:hidden;
+  background:var(--pane-bg-inv);
+  -webkit-backdrop-filter:blur(30px) saturate(160%);
+  backdrop-filter:blur(30px) saturate(160%);
+  box-shadow:var(--pane-hi),var(--shadow-soft);
+}
+
+/* ---------- 3. permanent specular + pointer-tracked refraction ----------
+   The sheen is always lit; the pointer only moves where it is brightest. */
+.hero__facts::before,.details::before,.credential::before,
+.featured__card::before,.project-card::before,.contact__panel::before{
+  content:"";position:absolute;inset:0;z-index:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(28rem 22rem at var(--sheen-x) var(--sheen-y),var(--sheen-tint),transparent 62%);
+  opacity:.55;transition:opacity .55s var(--ease-glass);
+}
+.hero__facts:hover::before,.details:hover::before,.credential:hover::before,
+.featured__card:hover::before,.project-card:hover::before,.contact__panel:hover::before{opacity:1}
+.hero__facts > div,.details > *,.credential > *,.featured__card > *,
+.project-card > *,.contact__panel > *{position:relative;z-index:1}
+
+/* ============================================================
+   FALLBACKS — never trade legibility for an effect
+   ============================================================ */
+
+/* Blur is the most expensive paint on a phone: thin it out below 720px. */
+@media (max-width:720px){
+  :root{--glass-blur:14px}
+  .featured__card,.project-card,.contact__panel{
+    -webkit-backdrop-filter:blur(16px) saturate(150%);
+    backdrop-filter:blur(16px) saturate(150%);
+  }
+  /* the capsule is short on a phone, so headline text passes right under it — lean opaque */
+  .nav__inner{background:var(--nav-field-strong)}
+}
+
+@supports not ((backdrop-filter:blur(2px)) or (-webkit-backdrop-filter:blur(2px))){
+  .nav__inner{background:var(--surface)}
+  .nav__links{background:var(--canvas)}
+  .hero__facts,.details,.credential,.featured__card,.project-card,.browser,.to-top{
+    background:var(--surface);box-shadow:none;border-color:var(--line);
+  }
+  .featured__media{background:var(--surface-2)}
+  .status,.btn--ghost{background:var(--surface);box-shadow:none;border-color:var(--line)}
+  .chips li{background:var(--surface);box-shadow:none}
+  .contact__panel{background:var(--inv-solid);border-color:var(--inv-line);box-shadow:none}
+  .copy-btn,.status--dark{background:transparent;box-shadow:none}
+}
+
+/* Users who ask the OS for reduced transparency get the pre-glass system back. */
+@media (prefers-reduced-transparency:reduce){
+  body::before,body::after{display:none}
+  .nav__inner,.nav.is-scrolled .nav__inner{background:var(--canvas);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;border-color:var(--line)}
+  .nav__links{background:var(--canvas);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none}
+  .hero__facts,.details,.credential,.featured__card,.project-card,.browser,.status,.to-top,.chips li{
+    background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none;
+    box-shadow:none;border-color:var(--line);
+  }
+  .featured__media{background:var(--surface-2)}
+  .contact__panel,.copy-btn,.status--dark{
+    background:var(--inv-solid);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
+  }
+  .btn--ghost,.theme-toggle,.nav__toggle,.project-card__arrow{
+    background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none;box-shadow:none;
+  }
+  .contact{background:transparent}
+  .contact::before{animation:none;opacity:.5}
+  .hero__facts::before,.details::before,.credential::before,
+  .featured__card::before,.project-card::before,.contact__panel::before{display:none}
+}
